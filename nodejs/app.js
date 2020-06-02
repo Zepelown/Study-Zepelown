@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const bodyParser = require('body-parser');
 
 app.locals.pretty = true;
 //템플릿 엔진 사용
@@ -11,6 +12,9 @@ app.set('view engine', 'jade');
 app.set('views', './views');
 
 app.use(express.static('public'));
+
+//POST방식을 사용할 떄 바디 파서가 사용자의 요청을 이 모듈이 처리하도록 함.
+app.use(bodyParser.urlencoded({ extended: false}));
 
 
 app.get('/template', (req, res) => {
@@ -41,6 +45,27 @@ app.get('/route/:id', (req, res) => {
 
 app.get('route/:id/:mode', (req, res) => {
     res.send(req.params.id+','+ req.params.mode)
+})
+
+//GET방식 값 전달
+//URL을 통하여 값을 전달
+app.get('/form', (req, res) => {
+    res.render('form');
+})
+
+app.get('/form_receiver', (req, res) => {
+    var title = req.query.title;
+    var description = req.query.description;
+    res.send(title + ''+description);
+
+})
+
+//POST방식 값 전달
+app.post('/form_receiver', (req, res) => {
+    var title = req.body.title;
+    var description = req.body.description;
+
+    res.send(title + ", " + description);
 })
 
 
